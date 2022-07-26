@@ -32,6 +32,13 @@ function Get-Statement()
   return $options, $createvimrc, $installpopup, $installicons -join ' '
 }
 
+# Create empty batch files in chocolatey's bin dir to control batch files' installation dir
+# install.exe overwrites them with actual batch files
+function Create-DummyBatchFiles()
+{
+  'vim', 'gvim', 'evim', 'view', 'gview', 'vimdiff', 'gvimdiff', 'vimtutor' | ForEach-Object { New-Item -Path "$env:ChocolateyInstall\bin" -Name "$_.bat" -ItemType "file" -Force | Write-Debug }
+}
+
 # Replace old ver dir with symlink
 # Use mklink because New-Item -ItemType SymbolicLink doesn't work in test-env
 # Use rmdir because Powershell cannot unlink directory symlink
